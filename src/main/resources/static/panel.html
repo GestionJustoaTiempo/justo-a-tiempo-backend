@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor Empresarial - Control Completo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!-- Pantalla de login -->
+<div id="loginScreen" class="login-screen">
+    <div class="login-overlay"></div>
+    <div class="login-box">
+        <div class="login-brand">
+            <div class="login-logo">JAT</div>
+            <div>
+                <h1>Gestión Justo A Tiempo</h1>
+                <p>Panel privado de administración</p>
+            </div>
+        </div>
+
+        <div class="login-body">
+            <h2>Iniciar sesión</h2>
+            <p class="login-subtitle">Acceso exclusivo para administración de proyectos y finanzas.</p>
+
+            <div class="form-group">
+                <label>Correo</label>
+                <input type="email" id="loginEmail" placeholder="correo@justoatiempo.cl">
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="loginPassword" placeholder="••••••••">
+            </div>
+
+            <div class="login-actions">
+                <button class="btn-login" onclick="hacerLogin()">Entrar al panel</button>
+            </div>
+
+            <p id="loginError" class="login-error">
+                Correo o contraseña incorrectos
+            </p>
+        </div>
+
+        <div class="login-footer">
+            <span>© Justo A Tiempo</span>
+            <span>Gestor Empresarial</span>
+        </div>
+    </div>
+</div>
+
+<!-- Contenido principal (oculto hasta iniciar sesión) -->
+<div class="container" id="mainApp" style="display:none;">
+    <div class="header">
+    <div>
+        <h1>Gestión Justo A Tiempo</h1>
+        <p>Control de Proyectos, Gastos y Personal</p>
+    </div>
+    <button class="btn-clear btn-small" onclick="cerrarSesion()">
+        Cerrar sesión
+    </button>
+</div>
+
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('proyectos')">Proyectos</button>
+        <button class="tab-btn" onclick="switchTab('abonos')">Historial de proyectos</button>
+        <button class="tab-btn" onclick="switchTab('gastos')">Gastos</button>
+        <button class="tab-btn" onclick="switchTab('asistencia')">Asistencia</button>
+        <button class="tab-btn" onclick="switchTab('nomina')">Nómina</button>
+        <button class="tab-btn" onclick="switchTab('resumen')">Resumen</button>
+    </div>
+
+    <!-- TAB PROYECTOS -->
+    <div id="proyectos" class="content active">
+        <div class="success" id="successProyecto">Proyecto agregado exitosamente</div>
+
+        <div class="form-section">
+            <h2>Agregar Nuevo Proyecto</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombre Empresa</label>
+                    <input type="text" id="empresa" placeholder="Mi Empresa SPA" value="Mi Empresa SPA">
+                </div>
+                <div class="form-group">
+                    <label>Orden de compra</label>
+                    <input type="text" id="ordenCompra" placeholder="N° OC o referencia">
+                </div>
+                <div class="form-group">
+                    <label>Nombre Proyecto</label>
+                    <input type="text" id="proyecto" placeholder="Descripción del proyecto">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Presupuesto Final</label>
+                    <input type="number" id="presupuesto" placeholder="1.000.000"
+                            oninput="formatNumberInput(this); calcularIVA()">
+                </div>
+                <div class="form-group">
+                    <label>Agregar IVA?</label>
+                    <select id="iva" onchange="calcularIVA()">
+                        <option value="No">No</option>
+                        <option value="S">Sí</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Monto IVA</label>
+                    <input type="number" id="montoIVA" class="calculated" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Total Final</label>
+                    <input type="number" id="totalFinal" class="calculated" readonly>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Estado Aprobación</label>
+                    <select id="estadoAprobacion">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Aprobado">Aprobado</option>
+                        <option value="Rechazado">Rechazado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>50% de Anticipo</label>
+                    <select id="pago50" onchange="toggleCamposAnticipo()">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Pagado">Pagado</option>
+                        <option value="Otro">Otro monto</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Línea principal de montos de anticipo -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Monto 50% Anticipo Recibido</label>
+                    <input type="number" id="montoRecibido50" placeholder="0"
+                            oninput="formatNumberInput(this); calcularMontosDeposito()">
+                </div>
+                <div class="form-group">
+                    <label>50% Debería Ser</label>
+                    <input type="number" id="monto50Debe" class="calculated" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Falta para llegar al 50%</label>
+                    <input type="number" id="faltaRecibir50" class="calculated" readonly>
+                </div>
+            </div>
+
+            <div class="form-row hidden" id="rowFecha50">
+                <div class="form-group">
+                    <label>Fecha 50%</label>
+                    <input type="date" id="fecha50">
+                </div>
+            </div>
+
+            <div class="form-row hidden" id="rowPago100">
+                <div class="form-group">
+                    <label>Pago 50% Restante</label>
+                    <select id="pago100">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Pagado">Pagado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Fecha 50% Restante</label>
+                    <input type="date" id="fecha100">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Fecha Entrega Proyecto</label>
+                    <input type="date" id="fechaEntregaProyecto">
+                </div>
+                <div class="form-group">
+                    <label>Estado Saldo 30 Días</label>
+                    <select id="estadoSaldo30">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Pagado">Pagado</option>
+                        <option value="Vencido">Vencido</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Saldo por Cobrar</label>
+                    <input type="number" id="saldoPorCobrar" class="calculated" readonly>
+                </div>
+            </div>
+
+            <!-- Notas proyecto multilinea -->
+            <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                    <label>Notas</label>
+                    <textarea id="notasProyecto" rows="3" placeholder="Observaciones"
+                                style="width: 100%; resize: vertical;"></textarea>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-add" onclick="agregarProyecto()">Agregar Proyecto</button>
+                <button class="btn-clear" onclick="limpiarFormularioProyecto()">Limpiar</button>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 20px;">Proyectos en proceso</h2>
+
+        <div class="proyectos-grid">
+            <div class="proyectos-lista">
+                <div id="cardsProyectos" class="proyectos-cards"></div>
+            </div>
+
+            <div class="proyecto-detalle" id="panelDetalleProyecto" style="display:none;" data-visible="false">
+                <h3>Detalle del proyecto</h3>
+                <p id="detalleProyectoTitulo" class="detalle-titulo"></p>
+                <p id="detalleProyectoOC" class="detalle-linea"></p>
+                <p id="detalleProyectoEmpresa" class="detalle-linea"></p>
+
+                <hr style="border-color:#333; margin:10px 0;">
+
+                <p id="detallePresupuesto" class="detalle-linea"></p>
+                <p id="detalleIVA" class="detalle-linea"></p>
+                <p id="detalleTotal" class="detalle-linea"></p>
+                <p id="detalleEstado" class="detalle-linea"></p>
+                <p id="detalleAnticipo" class="detalle-linea"></p>
+                <p id="detalleSaldo" class="detalle-linea"></p>
+
+                <div class="form-group" style="margin-top:8px;">
+                    <label style="font-size:0.8em;">N° 1ª factura</label>
+                    <input type="text" id="detalleFactura1" placeholder="N° 1ª factura"
+                            style="font-size:0.85em; padding:6px 8px;">
+                    <button class="btn-clear btn-small" style="margin-top:6px;"
+                            onclick="guardarFactura1Detalle()">Guardar 1ª factura</button>
+                </div>
+
+                <div class="form-group" style="margin-top:8px;">
+                    <label style="font-size:0.8em;">N° 2ª factura</label>
+                    <input type="text" id="detalleFacturaFinal" placeholder="N° 2ª factura"
+                            style="font-size:0.85em; padding:6px 8px;">
+                    <button class="btn-clear btn-small" style="margin-top:6px;"
+                            onclick="guardarFacturaFinalDetalle()">Guardar 2ª factura</button>
+                </div>
+
+                <p id="detalleFechas" class="detalle-linea" style="margin-top:6px;"></p>
+
+                <hr style="border-color:#333; margin:10px 0;">
+
+                <p class="detalle-label">Notas</p>
+                <textarea id="detalleNotas" class="detalle-notas"
+                            rows="4" style="width:100%; resize:vertical;"></textarea>
+                <button class="btn-clear btn-small" style="margin-top:6px;"
+                        onclick="guardarNotasDetalle()">Guardar notas</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB HISTORIAL (tarjetas read-only) -->
+    <div id="abonos" class="content">
+        <h2>Historial de proyectos</h2>
+
+        <div class="proyectos-grid">
+            <div class="proyectos-lista">
+                <div id="cardsHistorial" class="proyectos-cards"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB GASTOS -->
+    <div id="gastos" class="content">
+        <div class="success" id="successGasto">Gasto agregado exitosamente</div>
+
+        <div class="form-section">
+            <h2>Agregar Nuevo Gasto</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" id="fechaGasto">
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Gasto</label>
+                    <select id="tipoGasto">
+                        <option value="Contabilidad">Contabilidad</option>
+                        <option value="Gastos de Proyecto">Gastos de Proyecto</option>
+                        <option value="Herramientas">Herramientas</option>
+                        <option value="Pago Personal">Pago Personal</option>
+                        <option value="Instalación">Instalación</option>
+                        <option value="Combustible">Combustible</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <input type="text" id="descripcionGasto" placeholder="Descripción del gasto">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Proyecto Asociado</label>
+                    <input type="text" id="proyectoAsociado" placeholder="OC o FAC o N/A">
+                </div>
+                <div class="form-group">
+                    <label>Monto</label>
+                    <input type="number" id="montoGasto" placeholder="100.000"
+                           oninput="formatNumberInput(this)">
+                </div>
+                <div class="form-group">
+                    <label>Responsable</label>
+                    <input type="text" id="responsableGasto" placeholder="Nombre">
+                </div>
+                <div class="form-group">
+                    <label>Notas</label>
+                    <input type="text" id="notasGasto" placeholder="Observaciones">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-add" onclick="agregarGasto()">Agregar Gasto</button>
+                <button class="btn-clear" onclick="limpiarFormularioGasto()">Limpiar</button>
+            </div>
+        </div>
+
+        <table id="tablaGastos">
+            <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Descripción</th>
+                <th>Proyecto</th>
+                <th>Monto</th>
+                <th>Responsable</th>
+                <th>Acción</th>
+            </tr>
+            </thead>
+            <tbody id="bodyGastos"></tbody>
+        </table>
+    </div>
+
+    <!-- TAB ASISTENCIA -->
+    <div id="asistencia" class="content">
+        <div class="success" id="successAsistencia">Asistencia registrada</div>
+
+        <div class="form-section">
+            <h2>Registrar Asistencia</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombre Empleado</label>
+                    <input type="text" id="nombreEmpleado" placeholder="Nombre completo">
+                </div>
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" id="fechaAsistencia">
+                </div>
+                <div class="form-group">
+                    <label>Asistencia</label>
+                    <select id="estadoAsistencia">
+                        <option value="Presente">Presente</option>
+                        <option value="Ausente">Ausente</option>
+                        <option value="Justificado">Justificado</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Hora Entrada</label>
+                    <input type="time" id="horaEntrada">
+                </div>
+                <div class="form-group">
+                    <label>Hora Salida</label>
+                    <input type="time" id="horaSalida" oninput="calcularHoras()">
+                </div>
+                <div class="form-group">
+                    <label>Horas Trabajadas</label>
+                    <input type="number" id="horasTrabajadas" class="calculated" readonly step="0.5">
+                </div>
+                <div class="form-group">
+                    <label>Horas Extras</label>
+                    <input type="number" id="horasExtras" class="calculated" readonly step="0.5">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex:1;">
+                    <label>Observaciones</label>
+                    <input type="text" id="observacionesAsistencia" placeholder="Notas">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-add" onclick="agregarAsistencia()">Registrar</button>
+                <button class="btn-clear" onclick="limpiarFormularioAsistencia()">Limpiar</button>
+            </div>
+        </div>
+
+        <table id="tablaAsistencia">
+            <thead>
+            <tr>
+                <th>Empleado</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Entrada</th>
+                <th>Salida</th>
+                <th>Horas</th>
+                <th>Extras</th>
+                <th>Acción</th>
+            </tr>
+            </thead>
+            <tbody id="bodyAsistencia"></tbody>
+        </table>
+    </div>
+
+    <!-- TAB NÓMINA -->
+    <div id="nomina" class="content">
+        <div class="success" id="successNomina">Empleado agregado exitosamente</div>
+
+        <div class="form-section">
+            <h2>Agregar Empleado</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombre Empleado</label>
+                    <input type="text" id="nombreEmpleadoNomina" placeholder="Nombre completo">
+                </div>
+                <div class="form-group">
+                    <label>Monto por Día Trabajado</label>
+                    <input type="number" id="montoDiaEmpleado" placeholder="100.000"
+                           oninput="formatNumberInput(this)">
+                </div>
+                <div class="form-group">
+                    <label>Monto por Hora Extra</label>
+                    <input type="number" id="montoHoraExtraEmpleado" placeholder="50.000"
+                           oninput="formatNumberInput(this)">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-add" onclick="agregarEmpleadoNomina()">Agregar Empleado</button>
+                <button class="btn-clear" onclick="limpiarFormularioNomina()">Limpiar</button>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 30px;">Seguimiento de Nómina</h2>
+        <table id="tablaNomina">
+            <thead>
+            <tr>
+                <th>Empleado</th>
+                <th>Días Trabajados</th>
+                <th>Pago Días</th>
+                <th>Horas Extras</th>
+                <th>Pago Extras</th>
+                <th>Total Nómina</th>
+                <th>Acción</th>
+            </tr>
+            </thead>
+            <tbody id="bodyNomina"></tbody>
+        </table>
+
+        <h2 style="margin-top: 30px;">Detalle de Pagos</h2>
+        <div id="detalleNomina"></div>
+    </div>
+
+    <!-- TAB RESUMEN -->
+    <div id="resumen" class="content">
+        <h2>Resumen General</h2>
+
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h3>Total Proyectos</h3>
+                <div class="value" id="totalProyectos">0</div>
+            </div>
+            <div class="summary-card">
+                <h3>Total Ingresos</h3>
+                <div class="value" id="totalIngresos">0</div>
+            </div>
+            <div class="summary-card">
+                <h3>Total Gastos</h3>
+                <div class="value" id="totalGastos">0</div>
+            </div>
+            <div class="summary-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <h3>Ganancia Neta</h3>
+                <div class="value" id="ganancia">0</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+            <button class="btn-export" onclick="exportarExcel()">Descargar Excel</button>
+            <button class="btn-clear" onclick="borrarTodosLosDatos()">Borrar datos de este dispositivo</button>
+        </div>
+
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+
+</body>
+</html>
+
