@@ -24,7 +24,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Usuario loginRequest) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(loginRequest.getEmail());
+
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreo(loginRequest.getCorreo());
 
         if (usuarioOpt.isEmpty()) {
             return ResponseEntity.status(401).body("Credenciales inválidas");
@@ -32,12 +33,10 @@ public class AuthController {
 
         Usuario usuario = usuarioOpt.get();
 
-        // Aquí estás comparando texto plano; si después usas BCrypt, se cambia esta parte
         if (!usuario.getPassword().equals(loginRequest.getPassword())) {
             return ResponseEntity.status(401).body("Credenciales inválidas");
         }
 
-        // Devolver un objeto simple con mensaje y algún token o id si quieres
         return ResponseEntity.ok("Login exitoso");
     }
 }
