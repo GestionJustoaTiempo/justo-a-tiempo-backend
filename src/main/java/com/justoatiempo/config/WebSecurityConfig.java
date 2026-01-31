@@ -21,7 +21,7 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> {})
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/panel.html", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/panel.html", "/*.css", "/*.js", "/*.html", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated()
