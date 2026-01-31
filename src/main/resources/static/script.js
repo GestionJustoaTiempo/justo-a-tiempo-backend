@@ -946,11 +946,19 @@ function actualizarTarjetasHistorial() {
                 </div>
 
                 <div class="proyecto-card-footer">
-                    <button 
-                        class="btn-clear btn-small btn-icon btn-ver-detalle" 
-                        title="Ver detalle"
-                        onclick="verDetalleProyecto(${i})">🔍 Detalle</button>
-                </div>
+    <button 
+        class="btn-clear btn-small btn-icon btn-ver-detalle" 
+        title="Ver detalle"
+        onclick="verDetalleProyecto(${i})">🔍 Detalle</button>
+
+    <button 
+        class="btn-delete btn-small" 
+        title="Eliminar este proyecto"
+        onclick="eliminarProyecto(${i})">
+        🗑️ Eliminar
+    </button>
+</div>
+
             `;
 
             contenedor.appendChild(card);
