@@ -39,4 +39,17 @@ public class AuthController {
 
         return ResponseEntity.ok("Login exitoso");
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody Usuario nuevoUsuario) {
+        
+        if (usuarioRepository.findByCorreo(nuevoUsuario.getCorreo()).isPresent()) {
+            return ResponseEntity.status(400).body("El correo ya está registrado");
+        }
+        
+        nuevoUsuario.setActivo(true);
+        usuarioRepository.save(nuevoUsuario);
+        
+        return ResponseEntity.ok("Usuario creado exitosamente");
+    }
 }
