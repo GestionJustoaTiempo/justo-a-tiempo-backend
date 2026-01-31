@@ -20,20 +20,23 @@ import java.util.Arrays;
 @Configuration
 public class WebSecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> {})
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .httpBasic(basic -> {});
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> {})
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/", "/panel.html", "/css/**", "/js/**", "/images/**").permitAll()
+                    .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/api/**").permitAll()
+                    .anyRequest().authenticated()
+            )
+            .httpBasic(basic -> {});
 
-        return http.build();
-    }
+    return http.build();
+}
+
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
