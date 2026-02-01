@@ -693,16 +693,21 @@ function actualizarTablaProyectos() {
             valorColumna50 = 'Pendiente';
             valorColumnaSegundo50 = '';
         } else if (p.pago50 === 'Otro') {
-            if (!llegoAlCincuenta) {
-                valorColumna50 = 'Pendiente';
-                valorColumnaSegundo50 = 'Pendiente';
-                mostrarSumaCincuenta = true;
-            } else {
-                valorColumna50 = cincuentaTeorico ? cincuentaTeorico.toLocaleString() : '';
-                valorColumnaSegundo50 = (p.pago100 === 'Pagado')
-                    ? (cincuentaTeorico ? cincuentaTeorico.toLocaleString() : '')
-                    : 'Pendiente';
-            }
+    // Mostrar siempre el monto abonado real en la primera columna
+    valorColumna50 = reciboAnticipo ? reciboAnticipo.toLocaleString() : '0';
+
+    // Segunda columna: depende de si ya llegaste al 50% teórico
+    if (llegoAlCincuenta) {
+        valorColumnaSegundo50 = (p.pago100 === 'Pagado')
+            ? (cincuentaTeorico ? cincuentaTeorico.toLocaleString() : '')
+            : 'Pendiente';
+    } else {
+        valorColumnaSegundo50 = 'Pendiente';
+    }
+
+    // Ya no usamos la fila extra de “Suma 50%”
+    mostrarSumaCincuenta = false;
+
         } else if (p.pago50 === 'Pagado') {
             valorColumna50 = cincuentaTeorico ? cincuentaTeorico.toLocaleString() : '';
             valorColumnaSegundo50 = (p.pago100 === 'Pagado')
