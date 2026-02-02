@@ -1644,17 +1644,22 @@ function actualizarTablas() {
 // SINCRONIZACIÓN AUTOMÁTICA
 // =====================================
 
-// Sincronizar cada 15 segundos (más frecuente que 30s)
+// Sincronizar cada 15 segundos (sube cambios al backend)
 setInterval(() => {
   console.log('[AUTO-SYNC] Sincronización automática...');
   guardarDatosEnAPI();
 }, 15000); // 15 segundos
 
-// Refrescar datos del servidor cada 60 segundos
+// POR AHORA desactivamos el refresco automático desde el servidor,
+// para que los proyectos eliminados no vuelvan a aparecer desde la API.
+// Si quieres activarlo más adelante, descomenta este bloque:
+
+/*
 setInterval(() => {
   console.log('[AUTO-REFRESH] Refrescando datos del servidor...');
   refrescarDatosDesdeAPI();
 }, 60000); // 1 minuto
+*/
 
 // Sincronizar cuando se cierra el navegador
 window.addEventListener('beforeunload', () => {
