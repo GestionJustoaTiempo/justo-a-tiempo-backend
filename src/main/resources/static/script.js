@@ -12,6 +12,30 @@ let depositosAdiciones = [];
 // =====================================
 const API_BASE_URL = 'https://justo-a-tiempo-backend-production.up.railway.app/api';
 
+// Función para eliminar proyecto del backend
+async function eliminarProyectoBackend(proyectoId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/proyectos/${proyectoId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            console.log('✅ Proyecto eliminado del backend:', proyectoId);
+            return true;
+        } else {
+            console.error('❌ Error al eliminar del backend:', response.status);
+            return false;
+        }
+    } catch (error) {
+        console.error('🔴 Error de conexión al eliminar:', error);
+        return false;
+    }
+}
+
+
 // =====================================
 // FUNCIONES DE SINCRONIZACIÓN CON API
 // =====================================
@@ -1265,12 +1289,32 @@ document.addEventListener('click', function (event) {
 
 function eliminarProyecto(i) {
     if (confirm('¿Eliminar este proyecto?')) {
-        datosProyectos.splice(i, 1);
-        guardarDatos();
-        actualizarTablas();
-        actualizarResumen();
+        const proyecto = datosProyectos[i];
+        
+        // Si el proyecto tiene ID (fue guardado en backend), eliminarlo del backend
+        if (proyecto.id) {
+            eliminarProyectoBackend(proyecto.id).then(eliminado => {
+                if (eliminado) {
+                    // Eliminado correctamente del backend, ahora eliminar localmente
+                    datosProyectos.splice(i, 1);
+                    guardarDatos();
+                    actualizarTablas();
+                    actualizarResumen();
+                    mostrarNotificacionSync('Proyecto eliminado correctamente', 'success');
+                } else {
+                    alert('❌ Error al eliminar el proyecto del servidor');
+                }
+            });
+        } else {
+            // No tiene ID, solo eliminar localmente
+            datosProyectos.splice(i, 1);
+            guardarDatos();
+            actualizarTablas();
+            actualizarResumen();
+        }
     }
 }
+
 
 // =====================================
 // GASTOS
