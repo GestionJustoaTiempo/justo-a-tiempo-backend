@@ -50,18 +50,22 @@
 
 <!-- Contenido principal (oculto hasta iniciar sesión) -->
 <div class="container" id="mainApp" style="display:none;">
-    <div class="header">
-    <div>
-        <h1>Gestión Justo A Tiempo</h1>
-        <p>Control de Proyectos, Gastos y Personal</p>
-    <button class="btn-clear btn-small" onclick="cargarDatosDesdeAPI(); actualizarTablas(); actualizarResumen();" style="margin-right: 10px;">
-    🔄 Sincronizar
-</button>
-<button class="btn-clear btn-small" onclick="cerrarSesion()">
-    Cerrar sesión
-</button>
+<div class="header">
+  <div class="header-title">
+    <h1>Gestión Justo A Tiempo</h1>
+    <p>Control de Proyectos, Gastos y Personal</p>
+  </div>
 
+  <div class="header-actions">
+    <button class="btn-clear btn-small" onclick="cargarDatosDesdeAPI(); actualizarTablas(); actualizarResumen();">
+      🔄 Sincronizar
+    </button>
+    <button class="btn-clear btn-small" onclick="cerrarSesion()">
+      Cerrar sesión
+    </button>
+  </div>
 </div>
+
 
 
     <div class="tabs">

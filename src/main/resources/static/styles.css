@@ -1757,3 +1757,36 @@ CONTACTO
   font-size: 0.75em;
 }
 
+/* Header mejor alineado: título a la izquierda, botones a la derecha */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.header-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Botones del header en fila */
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* En pantallas chicas, que se apilen bonito */
+@media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
