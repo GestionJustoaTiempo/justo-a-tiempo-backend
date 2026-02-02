@@ -1640,25 +1640,28 @@ function actualizarTablas() {
 // SINCRONIZACIÓN AUTOMÁTICA
 // =====================================
 
-// Por ahora desactivamos cualquier sincronización automática con la API
-// para que no se pierdan ni se sobrescriban los datos locales.
-
-/*
+// Subir cambios cada 15 segundos (sin bajar datos del servidor)
 setInterval(() => {
   console.log('[AUTO-SYNC] Sincronización automática...');
   guardarDatosEnAPI();
 }, 15000); // 15 segundos
 
+// DESACTIVADO: No bajamos datos del servidor (los datos del localStorage son la verdad)
+/*
 setInterval(() => {
   console.log('[AUTO-REFRESH] Refrescando datos del servidor...');
   refrescarDatosDesdeAPI();
 }, 60000); // 1 minuto
+*/
 
+// Guardar al cerrar el navegador
 window.addEventListener('beforeunload', () => {
   console.log('[BEFOREUNLOAD] Sincronizando antes de cerrar...');
   guardarDatosEnAPI();
 });
 
+// DESACTIVADO: No recargamos datos al volver a la pestaña
+/*
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) {
     console.log('[VISIBILITY] Usuario volvió a la pestaña, refrescando datos...');
@@ -1666,4 +1669,5 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 */
+
 
