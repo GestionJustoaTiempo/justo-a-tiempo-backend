@@ -360,11 +360,12 @@ function guardarDatos() {
     console.error('Error guardando en localStorage', e);
   }
 
-  // Sincronizar con la API
+
   guardarDatosEnAPI().catch(err => {
     console.log('[SYNC] Error en sincronización, guardado localmente');
   });
 }
+
 
 
 
@@ -1640,19 +1641,11 @@ function actualizarTablas() {
 // SINCRONIZACIÓN AUTOMÁTICA
 // =====================================
 
-// Subir cambios cada 15 segundos (sin bajar datos del servidor)
+// Subir cambios cada 15 segundos
 setInterval(() => {
   console.log('[AUTO-SYNC] Sincronización automática...');
   guardarDatosEnAPI();
-}, 15000); // 15 segundos
-
-// DESACTIVADO: No bajamos datos del servidor (los datos del localStorage son la verdad)
-/*
-setInterval(() => {
-  console.log('[AUTO-REFRESH] Refrescando datos del servidor...');
-  refrescarDatosDesdeAPI();
-}, 60000); // 1 minuto
-*/
+}, 15000);
 
 // Guardar al cerrar el navegador
 window.addEventListener('beforeunload', () => {
@@ -1660,8 +1653,14 @@ window.addEventListener('beforeunload', () => {
   guardarDatosEnAPI();
 });
 
-// DESACTIVADO: No recargamos datos al volver a la pestaña
+// DESACTIVADO: No refrescamos automáticamente desde el servidor
+// (los datos del localStorage son la verdad, el botón Sincronizar trae cambios manualmente)
 /*
+setInterval(() => {
+  console.log('[AUTO-REFRESH] Refrescando datos del servidor...');
+  refrescarDatosDesdeAPI();
+}, 60000);
+
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) {
     console.log('[VISIBILITY] Usuario volvió a la pestaña, refrescando datos...');
@@ -1669,5 +1668,3 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 */
-
-
