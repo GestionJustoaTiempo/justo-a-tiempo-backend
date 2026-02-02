@@ -330,31 +330,24 @@ function cerrarSesion() {
 // luego se conectará a backend / Firestore)
 // =====================================
 function cargarDatos() {
-  // PRIMERO intentar cargar desde la API (datos actuales)
-  cargarDatosDesdeAPI().then(() => {
+  try {
+    const proyectosStr = localStorage.getItem('jat-proyectos');
+    const gastosStr = localStorage.getItem('jat-gastos');
+    const asistenciaStr = localStorage.getItem('jat-asistencia');
+    const empleadosStr = localStorage.getItem('jat-empleados');
+
+    datosProyectos = proyectosStr ? JSON.parse(proyectosStr) : [];
+    datosGastos = gastosStr ? JSON.parse(gastosStr) : [];
+    datosAsistencia = asistenciaStr ? JSON.parse(asistenciaStr) : [];
+    datosEmpleadosNomina = empleadosStr ? JSON.parse(empleadosStr) : [];
+
     actualizarTablas();
     actualizarResumen();
-  }).catch(err => {
-    // Si API falla, usar localStorage como respaldo
-    console.log('API no disponible, cargando desde caché local');
-    try {
-      const proyectosStr = localStorage.getItem('jat-proyectos');
-      const gastosStr = localStorage.getItem('jat-gastos');
-      const asistenciaStr = localStorage.getItem('jat-asistencia');
-      const empleadosStr = localStorage.getItem('jat-empleados');
-      
-      datosProyectos = proyectosStr ? JSON.parse(proyectosStr) : [];
-      datosGastos = gastosStr ? JSON.parse(gastosStr) : [];
-      datosAsistencia = asistenciaStr ? JSON.parse(asistenciaStr) : [];
-      datosEmpleadosNomina = empleadosStr ? JSON.parse(empleadosStr) : [];
-      
-      actualizarTablas();
-      actualizarResumen();
-    } catch (e) {
-      console.error('Error cargando datos', e);
-    }
-  });
+  } catch (e) {
+    console.error('Error cargando datos', e);
+  }
 }
+
 
 function guardarDatos() {
   try {
@@ -367,10 +360,12 @@ function guardarDatos() {
     console.error('Error guardando en localStorage', e);
   }
 
-  guardarDatosEnAPI().catch(err => {
-    console.log('[SYNC] Error en sincronización, guardado localmente');
-  });
+  // Por ahora NO sincronizamos con la API para evitar que se pisen los datos
+  // guardarDatosEnAPI().catch(err => {
+  //   console.log('[SYNC] Error en sincronización, guardado localmente');
+  // });
 }
+
 
 function borrarTodosLosDatos() {
     const confirmar = confirm(
@@ -1644,32 +1639,25 @@ function actualizarTablas() {
 // SINCRONIZACIÓN AUTOMÁTICA
 // =====================================
 
-// Sincronizar cada 15 segundos (sube cambios al backend)
-setInterval(() => {
-  console.log('[AUTO-SYNC] Sincronización automática...');
-  guardarDatosEnAPI();
-}, 15000); // 15 segundos
-
-// POR AHORA desactivamos el refresco automático desde el servidor,
-// para que los proyectos eliminados no vuelvan a aparecer desde la API.
-// Si quieres activarlo más adelante, descomenta este bloque:
+// Por ahora desactivamos cualquier sincronización automática con la API
+// para que no se pierdan ni se sobrescriban los datos locales.
 
 /*
 setInterval(() => {
+  console.log('[AUTO-SYNC] Sincronización automática...');
+  guardarDatosEnAPI();
+}, 15000);
+
+setInterval(() => {
   console.log('[AUTO-REFRESH] Refrescando datos del servidor...');
   refrescarDatosDesdeAPI();
-}, 60000); // 1 minuto
-*/
+}, 60000);
 
-// Sincronizar cuando se cierra el navegador (solo subir cambios)
 window.addEventListener('beforeunload', () => {
   console.log('[BEFOREUNLOAD] Sincronizando antes de cerrar...');
   guardarDatosEnAPI();
 });
 
-// También DESACTIVAMOS el refresco al volver a la pestaña,
-// para que no se reemplacen los datos locales con los del servidor.
-/*
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) {
     console.log('[VISIBILITY] Usuario volvió a la pestaña, refrescando datos...');
