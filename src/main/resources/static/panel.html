@@ -54,10 +54,13 @@
     <div>
         <h1>Gestión Justo A Tiempo</h1>
         <p>Control de Proyectos, Gastos y Personal</p>
-    </div>
-    <button class="btn-clear btn-small" onclick="cerrarSesion()">
-        Cerrar sesión
-    </button>
+    <button class="btn-clear btn-small" onclick="cargarDatosDesdeAPI(); actualizarTablas(); actualizarResumen();" style="margin-right: 10px;">
+    🔄 Sincronizar
+</button>
+<button class="btn-clear btn-small" onclick="cerrarSesion()">
+    Cerrar sesión
+</button>
+
 </div>
 
 
