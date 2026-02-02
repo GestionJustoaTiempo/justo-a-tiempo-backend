@@ -1635,34 +1635,3 @@ function actualizarTablas() {
     actualizarTablaAsistencia();
     actualizarTablaNomina();
 }
-
-// =====================================
-// SINCRONIZACIÓN AUTOMÁTICA
-// =====================================
-
-// Por ahora desactivamos cualquier sincronización automática con la API
-// para que no se pierdan ni se sobrescriban los datos locales.
-
-/*
-setInterval(() => {
-  console.log('[AUTO-SYNC] Sincronización automática...');
-  guardarDatosEnAPI();
-}, 15000); // 15 segundos
-
-setInterval(() => {
-  console.log('[AUTO-REFRESH] Refrescando datos del servidor...');
-  refrescarDatosDesdeAPI();
-}, 60000); // 1 minuto
-
-window.addEventListener('beforeunload', () => {
-  console.log('[BEFOREUNLOAD] Sincronizando antes de cerrar...');
-  guardarDatosEnAPI();
-});
-
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) {
-    console.log('[VISIBILITY] Usuario volvió a la pestaña, refrescando datos...');
-    refrescarDatosDesdeAPI();
-  }
-});
-*/
