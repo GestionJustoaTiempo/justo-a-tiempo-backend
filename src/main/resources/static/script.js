@@ -360,11 +360,12 @@ function guardarDatos() {
     console.error('Error guardando en localStorage', e);
   }
 
-  // Por ahora NO sincronizamos con la API para evitar que se pisen los datos
+  // Por ahora NO sincronizamos con la API
   // guardarDatosEnAPI().catch(err => {
   //   console.log('[SYNC] Error en sincronización, guardado localmente');
   // });
 }
+
 
 
 function borrarTodosLosDatos() {
@@ -1646,12 +1647,12 @@ function actualizarTablas() {
 setInterval(() => {
   console.log('[AUTO-SYNC] Sincronización automática...');
   guardarDatosEnAPI();
-}, 15000);
+}, 15000); // 15 segundos
 
 setInterval(() => {
   console.log('[AUTO-REFRESH] Refrescando datos del servidor...');
   refrescarDatosDesdeAPI();
-}, 60000);
+}, 60000); // 1 minuto
 
 window.addEventListener('beforeunload', () => {
   console.log('[BEFOREUNLOAD] Sincronizando antes de cerrar...');
