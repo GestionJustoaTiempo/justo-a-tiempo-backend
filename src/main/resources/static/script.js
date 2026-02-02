@@ -1316,6 +1316,7 @@ function eliminarProyecto(i) {
 }
 
 
+
 // =====================================
 // GASTOS
 // =====================================
@@ -1686,10 +1687,12 @@ function actualizarTablas() {
 // =====================================
 
 // Subir cambios cada 15 segundos
-setInterval(() => {
-  console.log('[AUTO-SYNC] Sincronización automática...');
-  guardarDatosEnAPI();
-}, 15000);
+// SINCRONIZACIÓN AUTOMÁTICA DESACTIVADA
+// setInterval(() => {
+//     console.log("AUTO-SYNC: Sincronización automática...");
+//     guardarDatosEnAPI();
+// }, 15000);
+
 
 // Guardar al cerrar el navegador
 window.addEventListener('beforeunload', () => {
