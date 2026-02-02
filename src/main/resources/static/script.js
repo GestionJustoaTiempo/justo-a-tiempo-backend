@@ -360,12 +360,11 @@ function guardarDatos() {
     console.error('Error guardando en localStorage', e);
   }
 
-  // Por ahora NO sincronizamos con la API
-  // guardarDatosEnAPI().catch(err => {
-  //   console.log('[SYNC] Error en sincronización, guardado localmente');
-  // });
+  // Sincronizar con la API
+  guardarDatosEnAPI().catch(err => {
+    console.log('[SYNC] Error en sincronización, guardado localmente');
+  });
 }
-
 
 
 function borrarTodosLosDatos() {
