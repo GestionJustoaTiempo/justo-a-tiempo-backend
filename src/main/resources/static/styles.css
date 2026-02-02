@@ -197,6 +197,7 @@ HEADER PANEL
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
 }
 
 .header h1 {
@@ -208,6 +209,30 @@ HEADER PANEL
 .header p {
   font-size: 0.85em;
   color: #9ca3af;
+}
+
+.header-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
 }
 
 /* -------------------------
@@ -281,7 +306,7 @@ SECCIONES DE FORMULARIO
 .form-section h2 {
   font-size: 0.98em;
   margin-bottom: 12px;
-  color: #e5e7eb;
+  color: #111827;          /* más visible sobre fondo claro */
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -433,16 +458,24 @@ button {
 /* Botón eliminar */
 
 .btn-delete {
-  background: rgba(127, 29, 29, 0.95);
-  color: #fee2e2;
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
   padding: 6px 12px;
-  font-size: 0.8em;
+  font-size: 0.85em;
   border-radius: 999px;
-  border: 1px solid rgba(127, 29, 29, 1);
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .btn-delete:hover {
-  background: #b91c1c;
+  background-color: #f5c6cb;
+  box-shadow: 0 2px 8px rgba(114, 28, 36, 0.3);
+}
+
+.btn-delete.btn-small {
+  padding: 4px 8px;
+  font-size: 0.75em;
 }
 
 /* Botones pequeños / iconos */
@@ -497,8 +530,8 @@ th {
 
 td {
   padding: 10px 12px;
-  border-bottom: 1px solid rgba(31, 41, 55, 0.9);
-  color: #d1d5db;
+  border-bottom: 1px solid rgba(31, 41, 55, 0.15);
+  color: #111827;   /* texto oscuro y legible */
 }
 
 tr:last-child td {
@@ -563,7 +596,7 @@ GRID PROYECTOS + DETALLE (PANEL)
 .detalle-linea {
   font-size: 0.8em;
   margin-bottom: 3px;
-  color: #9ca3af;
+  color: #4b5563;    /* más contraste que el gris muy claro */
 }
 
 .detalle-label {
@@ -673,17 +706,17 @@ TARJETAS DE PROYECTOS (PANEL)
 .proyecto-card-titulo {
   font-size: 0.95em;
   font-weight: 600;
-  color: #f9fafb;
+  color: #111827;    /* antes casi blanco */
 }
 
 .proyecto-card-oc {
   font-size: 0.78em;
-  color: #9ca3af;
+  color: #6b7280;
 }
 
 .proyecto-card-empresa {
   font-size: 0.78em;
-  color: #e5e7eb;
+  color: #4b5563;
   margin-bottom: 4px;
 }
 
@@ -714,7 +747,7 @@ TARJETAS DE PROYECTOS (PANEL)
   margin-top: 6px;
   margin-bottom: 8px;
   font-size: 0.8em;
-  color: #e5e7eb;
+  color: #374151;   /* gris oscuro legible */
 }
 
 .proyecto-card-row {
@@ -1734,59 +1767,4 @@ CONTACTO
   max-height: 80vh;
   object-fit: contain;
   border-radius: 14px;
-}
-
-.btn-delete {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-  padding: 6px 12px;
-  font-size: 0.85em;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-delete:hover {
-  background-color: #f5c6cb;
-  box-shadow: 0 2px 8px rgba(114, 28, 36, 0.3);
-}
-
-.btn-delete.btn-small {
-  padding: 4px 8px;
-  font-size: 0.75em;
-}
-
-/* Header mejor alineado: título a la izquierda, botones a la derecha */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.header-title {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-/* Botones del header en fila */
-.header-actions {
-  display: flex;
-  gap: 8px;
-}
-
-/* En pantallas chicas, que se apilen bonito */
-@media (max-width: 640px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .header-actions {
-    width: 100%;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-  }
 }
