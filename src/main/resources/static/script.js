@@ -1661,33 +1661,19 @@ setInterval(() => {
 }, 60000); // 1 minuto
 */
 
-// Sincronizar cuando se cierra el navegador
+// Sincronizar cuando se cierra el navegador (solo subir cambios)
 window.addEventListener('beforeunload', () => {
   console.log('[BEFOREUNLOAD] Sincronizando antes de cerrar...');
   guardarDatosEnAPI();
 });
 
-// Sincronizar cuando se vuelve a la pestaña
+// También DESACTIVAMOS el refresco al volver a la pestaña,
+// para que no se reemplacen los datos locales con los del servidor.
+/*
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) {
     console.log('[VISIBILITY] Usuario volvió a la pestaña, refrescando datos...');
     refrescarDatosDesdeAPI();
   }
 });
-
-// Cargar datos al iniciar la aplicación
-window.addEventListener('load', () => {
-  const yaLogueado = localStorage.getItem('jat-logueado') === '1';
-  if (yaLogueado) {
-    mostrarApp();
-    cargarDatos();
-  }
-  // Inicializar fechas de hoy
-  if (document.getElementById('fechaGasto')) {
-    document.getElementById('fechaGasto').valueAsDate = new Date();
-  }
-  if (document.getElementById('fechaAsistencia')) {
-    document.getElementById('fechaAsistencia').valueAsDate = new Date();
-  }
-});
-
+*/
