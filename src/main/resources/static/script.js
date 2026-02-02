@@ -42,60 +42,69 @@ async function eliminarProyectoBackend(proyectoId) {
 
 // Sincronizar datos con la API
 async function guardarDatosEnAPI() {
-  // Guardar proyectos
-  if (datosProyectos.length > 0) {
-    for (let proyecto of datosProyectos) {
-      try {
-        const response = await fetch(`${API_BASE_URL}/proyectos`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(proyecto)
-        });
-        if (response.ok) {
-          const nuevoProyecto = await response.json();
-          proyecto.id = nuevoProyecto.id;
+    // Guardar proyectos
+    if (datosProyectos.length > 0) {
+        for (let proyecto of datosProyectos) {
+            try {
+                if (proyecto.id) {
+                    // Si tiene ID, hacer PUT (actualizar)
+                    await fetch(`${API_BASE_URL}/proyectos/${proyecto.id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(proyecto)
+                    });
+                } else {
+                    // Si NO tiene ID, hacer POST (crear)
+                    const response = await fetch(`${API_BASE_URL}/proyectos`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(proyecto)
+                    });
+                    if (response.ok) {
+                        const nuevoProyecto = await response.json();
+                        proyecto.id = nuevoProyecto.id;
+                    }
+                }
+            } catch (e) {
+                console.log("Error guardando proyecto", e);
+            }
         }
-      } catch (e) {
-        console.log('Error creando proyecto:', e);
-      }
     }
-  }
 
-  // Guardar gastos
-  if (datosGastos.length > 0) {
-    for (let gasto of datosGastos) {
-      if (gasto.id) {
-        await fetch(`${API_BASE_URL}/gastos/${gasto.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(gasto)
-        }).catch(e => console.log('Error actualizando gasto:', e));
-      } else {
-        try {
-          const response = await fetch(`${API_BASE_URL}/gastos`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(gasto)
-          });
-          if (response.ok) {
-            const nuevoGasto = await response.json();
-            gasto.id = nuevoGasto.id;
-          }
-        } catch (e) {
-          console.log('Error creando gasto:', e);
+    // Guardar gastos
+    if (datosGastos.length > 0) {
+        for (let gasto of datosGastos) {
+            if (gasto.id) {
+                await fetch(`${API_BASE_URL}/gastos/${gasto.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(gasto)
+                }).catch(e => console.log("Error actualizando gasto", e));
+            } else {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/gastos`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(gasto)
+                    });
+                    if (response.ok) {
+                        const nuevoGasto = await response.json();
+                        gasto.id = nuevoGasto.id;
+                    }
+                } catch (e) {
+                    console.log("Error creando gasto", e);
+                }
+            }
         }
-      }
     }
-  }
 
-  try {
-    // Guardar en localStorage como caché
-    guardarEnLocalStorage();
-    console.log('✅ Datos sincronizados');
-  } catch (error) {
-    console.error('Error sincronizando:', error);
-    guardarEnLocalStorage();
-  }
+    try {
+        guardarEnLocalStorage();
+        console.log("Datos sincronizados");
+    } catch (error) {
+        console.error("Error sincronizando", error);
+        guardarEnLocalStorage();
+    }
 }
 
 
