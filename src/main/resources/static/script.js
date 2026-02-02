@@ -367,6 +367,7 @@ function guardarDatos() {
 }
 
 
+
 function borrarTodosLosDatos() {
     const confirmar = confirm(
         'Esto eliminará todos los proyectos, gastos, asistencia y nómina guardados en este dispositivo. ¿Continuar?'
